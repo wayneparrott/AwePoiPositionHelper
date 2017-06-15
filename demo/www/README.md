@@ -15,7 +15,7 @@ There are 2 formats for defining a POI:
 * GPS latitude & longitude coordinate
 * Polar coordinates relative to the position of the device when start() is called.
 
-**GPS (Lat,Lng) Format**  
+**GPS (Lat,LNG) Format**  
 
 ```
 { poi_id: <string>,     //unique identifier  

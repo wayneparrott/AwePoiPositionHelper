@@ -1,6 +1,3 @@
-//Note: modified by Wayne Parrot, 
-// Merged wgs84 module and removed module structure.
-
 /*
  * (C) 2015 Seth Lakowske
 
