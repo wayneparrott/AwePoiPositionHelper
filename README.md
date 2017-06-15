@@ -17,7 +17,7 @@ There are 2 formats for defining a POI:
 
 **GPS (Lat,LNG) Format**  
 
-```json
+```
 { poi_id: <string>,     //unique identifier  
     gps: {  
       lat: <number>,    //latitude  
@@ -28,7 +28,7 @@ There are 2 formats for defining a POI:
 ```
 
   **Polar Coordinate Format**  
-```json
+```
 { poi_id: <string>,  //unique identifier
   polar: {
     radius: number, //height above the ground 
@@ -76,7 +76,7 @@ Stop position tracking and the Cordova plugin watchHeading and watchPosition tas
 *poi_ready*
 Signals that AwePoiPositionHelper has completed creating and updating the initial positions of all points of interest relative to the device's gps location and heading
 
-```javascript
+```
 window.addEventListener('pois_ready, function() {
   awe.projections.add(
     {                            
