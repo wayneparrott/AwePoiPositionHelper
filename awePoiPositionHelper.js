@@ -100,7 +100,7 @@ var AwePoiPositionHelper = (function () {
 
 
     var initialize = function(poiLocationsArray, options) {
-        document.addEventListener('deviceready', AwePoiPositionHelper._deviceReady, true);
+        document.addEventListener('deviceready', AwePoiPositionHelper._deviceReady);
 
         poiLocations = poiLocationsArray;
 
@@ -170,7 +170,7 @@ var AwePoiPositionHelper = (function () {
         //
         if (!isNaN(_options.povHeight)) {
             _getThreeCamera().position.y = _options.povHeight;
-            document.getElementById("cameraelev").textContent=_options.povHeight+"";
+            //document.getElementById("cameraht").textContent=_options.povHeight+"";
         }
         
         var threeScene = _getThreeScene();
@@ -300,7 +300,7 @@ var AwePoiPositionHelper = (function () {
         _heading = newHeading;
 
         //console.log('heading: ' + _heading);
-        document.getElementById("heading").textContent=""+_heading;
+        //document.getElementById("heading").textContent=""+_heading;
     }
 
 
@@ -367,8 +367,8 @@ var AwePoiPositionHelper = (function () {
 
                 // console.log('lat: ' + position.coords.latitude);
                 // console.log('long: ' + position.coords.longitude);
-        document.getElementById("lat").textContent=""+_geolocData.geoloc.lat;
-        document.getElementById("lng").textContent=""+_geolocData.geoloc.lng;
+        //document.getElementById("lat").textContent=""+_geolocData.geoloc.lat;
+        //document.getElementById("lng").textContent=""+_geolocData.geoloc.lng;
 
         if (!_geolocData.initialGeoloc) {
             _geolocData.initialGeoloc = _geolocData.geoloc;
@@ -530,8 +530,8 @@ var AwePoiPositionHelper = (function () {
             camera.position.x += x; 
             camera.position.z += z; 
 
-            console.log('camera', x, z, camera.position);
-            document.getElementById("camera").textContent=""+x+", "+z;
+            //console.log('camera', x, z, camera.position);
+            //document.getElementById("camera").textContent=""+x+", "+z;
         }
     }
 

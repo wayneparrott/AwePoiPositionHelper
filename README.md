@@ -1,12 +1,15 @@
 AwePoiPositionHelper
 ====================
 
-Position [awe.js](https://github.com/awe-media/awe.js) points of interest (poi) in your [Cordova](https://cordova.apache.org/) hybrid-mobile app using gps (lat,lng) coordinates or polar coordinates. As the device position changes, update the awe.js point of view (pov) position respectively. All POI's are positioned relative to the north compass heading (0 degress) as provided by the device compass heading.
+Position [awe.js](https://github.com/awe-media/awe.js) points of interest (poi) in your [Cordova](https://cordova.apache.org/) hybrid-mobile app using gps (lat,lng) coordinates or polar coordinates. As the device position changes, update the awe.js point of view (pov) position respectively. All POI's are positioned relative to the north compass heading (0 degress) as provided by the device compass heading.  
+
+In addition to defining the POIs in your app you are responsible for defining the awe projections of your projectUse the POI.id 
 
 The following Cordova plugins are required:  
   [cordova-plugin-device](https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device/index.html)  
   [cordova-plugin-device-orientation](https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-device-orientation/index.html)  
   [cordova-plugin-geolocation](https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-geolocation/index.html)   
+  [com.ezartech.ezar.videooverlay](https://www.ezartech.com/docsvideooverlay) - optional
 
 Defining a Point of Interest
 ----------------------------
