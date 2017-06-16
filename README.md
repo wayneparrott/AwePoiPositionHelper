@@ -43,7 +43,8 @@ There are 2 formats for defining a POI:
 }
 ```
 
-# Note on GPS coordinates and POI positioning
+Note on GPS coordinates and POI positioning
+-------------------------------------------
 POI positions defined with GPS (latitude,longitude) coordinates are converted to ECEF XYZ coordinates measured in meters. A relative XYZ position (meters) is created by subtracting the POI(xyz) from the ECEF of device's current gps position. A default 1m:1unit scale is used when mapping XYZ coordinates to awe/three.js object positions. Keep in mind that awe.js projections positioned outside of the view frustum (default 2000) will not be visible. Thus POIs with positioned defined with gps coordinates > 2000m from the device's current position will not be visible. To address this you can increase the awe POV far property to a much larger number. 
 
 *Todo: add scaling support *
