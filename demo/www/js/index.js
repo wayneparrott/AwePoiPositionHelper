@@ -67,7 +67,7 @@ var app = {
                         capabilities: ['webgl'],
                         files: [
                             ['libs/awe.js/js/awe-standard-dependencies.js' + d, 'libs/awe.js/js/awe-standard.js'], // core dependencies for this app 
-                            ['libs/awe.js/js/plugins_/StereoEffect.js', 'libs/awe.js/js/plugins/VREffect.js'], // dependencies for render effects
+                            ['libs/awe.js/js/plugins_/StereoEffect.js', 'libs/awe.js/js/plugins_/VREffect.js'], // dependencies for render effects
                             'libs/awe.js/js/plugins_/awe.rendering_effects.js' + d,
                             'libs/awe.js/js/plugins_/awe-standard-object_clicked_or_focused.js' + d, // object click/tap handling plugin
                             'libs/awe.js/js/plugins_/awe.gyro.js', // basic gyro handling
