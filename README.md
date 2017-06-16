@@ -89,7 +89,7 @@ Stop position tracking and the Cordova plugin watchHeading and watchPosition tas
 Signals that AwePoiPositionHelper has completed creating and updating the initial positions of all points of interest relative to the device's gps location and heading
 
 ```
-window.addEventListener('pois_ready, function() {
+window.addEventListener('pois_ready', function() {
   awe.projections.add(
     {                            
       id: 'north_poi',
