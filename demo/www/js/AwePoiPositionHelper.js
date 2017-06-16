@@ -7,7 +7,7 @@
  * Author: @wayne_parrott, @ezartech
  *
  * Licensed under a modified MIT license. 
- * Please see LICENSE file or http://ezartech.com/ezarstartupkit-license for more information
+ * Please see LICENSE file or [online version](http://ezartech.com/ezarstartupkit-license) for more information.
  *
  */
 
@@ -147,8 +147,7 @@ var AwePoiPositionHelper = (function () {
 
     var _continueStart = function() {
 
-        //adjust POIs for gps (lat,lng) position; create poi if it does not exist
-        //adjust POIs for polar coordinate position; create poi if it does not exist
+        //adjust POIs position; create poi if it does not exist
         _processPoiLocations(!!_options.linkAweRefFrameToCompassHeading);
         
         //rotate camera to compensate for initial heading of device
@@ -163,9 +162,6 @@ var AwePoiPositionHelper = (function () {
 
         _makeProjectionsVisible();
         _state = States.RUNNING;
-
-        //no longer need heading
-        //_stopHeadingWatch();
 
         //
         if (!isNaN(_options.povHeight)) {
@@ -189,7 +185,8 @@ var AwePoiPositionHelper = (function () {
 
     var stop = function() {
         _stopGeolocationWatch();
-
+        _stopHeadingWatch();
+        
         _state = States.STOPPED;
 
         //all state for new start() session
@@ -210,7 +207,7 @@ var AwePoiPositionHelper = (function () {
             geoloc: null,
             prevEcefLoc: null,
             ecefLoc: null,
-            data: [],  //data pts for moving avg
+            data: [],  //data pts for moving avg calc
             maxSampleCnt: 5,
             avgSum: {lat:0,lng:0}
         };
@@ -255,8 +252,7 @@ var AwePoiPositionHelper = (function () {
 
 
     var _startHeadingWatch = function() {
-        //if (!_options._applyInitialHeadingOffset) return;
-
+    
         _headingWatchId =
             navigator.compass.watchHeading(
                 function(headingInfo) {      

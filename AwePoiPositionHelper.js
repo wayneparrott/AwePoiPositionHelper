@@ -7,7 +7,7 @@
  * Author: @wayne_parrott, @ezartech
  *
  * Licensed under a modified MIT license. 
- * Please see LICENSE file or http://ezartech.com/ezarstartupkit-license for more information
+ * Please see LICENSE file or [online version](http://ezartech.com/ezarstartupkit-license) for more information.
  *
  */
 

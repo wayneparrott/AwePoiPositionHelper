@@ -138,7 +138,8 @@ var app = {
                             AwePoiPositionHelper.initialize(
                                 poiLocations,
                                 {   povHeight: 10, 
-                                    showGrid: true
+                                    showGrid: true,
+                                    linkAweRefFrameToCompassHeading: false
                                 });
                             
                             //Create awe POIs and start tracking device position changes.
