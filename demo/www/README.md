@@ -1,11 +1,11 @@
 ezar-poi
 ====================
 
-This [Cordova](https://cordova.apache.org/) hybrid-mobile project demonstrates how to use the AwePoiPositionHelper to create [awe.js]((https://github.com/awe-media/awe.js) ) AR points of interest.
+This [Cordova](https://cordova.apache.org/) hybrid-mobile project demonstrates how to use the AwePoiPositionHelper to create [awe.js]((https://github.com/awe-media/awe.js) ) AR points of interest. 
 You should be familiar with both the awe.js AR engine api and the Cordova SDK to build and customize
 this project for your own use. 
 
-<video of app goes here>
+*video of app goes here*
 
 
 Getting Started

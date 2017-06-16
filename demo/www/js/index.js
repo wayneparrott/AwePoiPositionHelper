@@ -33,7 +33,7 @@ var app = {
                     alert('unable to init ezar: ' + err);
                 });
         } else {
-            alert('Unable to detect the ezAR plugin');
+            alert('Video background is not available.');
         }
     },
 

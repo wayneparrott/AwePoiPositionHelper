@@ -1,7 +1,9 @@
 AwePoiPositionHelper
 ====================
 
-Position [awe.js](https://github.com/awe-media/awe.js) points of interest (poi) in your [Cordova](https://cordova.apache.org/) hybrid-mobile app using gps (lat,lng) coordinates or polar coordinates. As the device position changes, update the awe.js point of view (pov) position respectively. All POI's are positioned relative to the north compass heading (0 degress) as provided by the device compass heading.  
+Position [awe.js](https://github.com/awe-media/awe.js) points of interest (poi) in your [Cordova](https://cordova.apache.org/) hybrid-mobile app using gps (lat,lng) coordinates or polar coordinates. 
+As you move and change the device's position the awe.js point of view (pov) position is updated respectively. By default POI's are positioned relative to the north compass heading (0 degress) as provided by the device compass heading. Options are available for configure linking the awe.js AR reference frame to the device 
+position and compass heading.
 
 In addition to defining the POIs in your app you are responsible for defining the awe projections of your projectUse the POI.id 
 
@@ -46,7 +48,8 @@ There are 2 formats for defining a POI:
 initialize( poiLocations: POI[], options?: Object )
 -------------------------------------------------
 
-  Configure the Helper with the POI definitions and options.  
+  Configure the Helper with the POI definitions and options. This function detects the Cordova
+  **deviceready** event.
 ```javascript
 initialize( 
   poiLocations  //array of 0 or more point of interest definitions  
@@ -66,7 +69,7 @@ start()
       
   Create and position POI objects. POIs positioned by gps (lat,lng) coordinates are converted to [Earth-Centered,Earth-Fixed](https://en.wikipedia.org/wiki/ECEF) coordinates. POI's positioned using polar coordinates are positioned relative to current location. When options.linkCameraToPosition is true (default)update the awe.pov as the device position changes. The Cordova device, deviceorientation (compass) and geolocation plugins are required for this function to perform correctly. 
 
-  Prior to return of this function a custom "pois_ready" event is dispatched. Consider using this event to trigger and updates to awe projections attached to POIs such as setting visibility or other properties.
+  This function requires the Cordova deviceready event to complete operation. Prior to return of this function a custom "pois_ready" event is dispatched. Consider using this event to trigger and updates to awe projections attached to POIs such as setting visibility or other properties.
 
 
 stop()
