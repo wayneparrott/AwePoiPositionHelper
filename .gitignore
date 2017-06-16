@@ -1,2 +1,5 @@
 platforms/
 plugins/
+.vscode/
+typings/
+jsconfig.json
