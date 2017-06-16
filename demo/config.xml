@@ -2,7 +2,8 @@
 <widget id="com.ezartech.demo.ezarpoi" version="0.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ezar-poi</name>
     <description>
-        Display points of interest overlaying a camera video preview.
+        Display points of interest positioned using gps or polar coordinates 
+        overlaying a camera video preview.
     </description>
     <author email="info@ezartech.com" href="http://ezartech.com">
         Wayne Parrott

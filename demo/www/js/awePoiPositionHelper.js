@@ -1,23 +1,28 @@
 /*
- * awePoiPositionHelper.h
+ * AwePoiPositionHelper.js
  *
  * Copyright 2017, ezAR Technologies
  * http://ezartech.com
  *
- * By @wayne_parrott
+ * Author: @wayne_parrott, @ezartech
  *
  * Licensed under a modified MIT license. 
- * Please see LICENSE or http://ezartech.com/ezarstartupkit-license for more information
+ * Please see LICENSE file or http://ezartech.com/ezarstartupkit-license for more information
  *
  */
 
-//Position points of interest using gps and polar coordinates.
-//requires cordova plugins: 
+//Position points of interest using gps and polar coordinates and track
+// as device position changes.
+// Dependencies:
+//   ecef.js   - converts gps (lat,lng) to xyz coords
+//   cordova plugins: 
 //      device
 //      geolocation (lat,lng)
 //      device-orientation (compass heading)
 //
-//events: pois_ready
+// Custome events: 
+//   pois_ready - indicates awe POIs created and positioned 
+//
 //todo: 
 //  1) add events location_changed, state_changed
 //  2) no requirement for device-orientation plugin when option.linkAweRefFrameToCompassHeading
@@ -26,7 +31,7 @@
 //     watchPosition() changes not needed 
 //  4) replace device.platform implementation in order to remove requirement for Cordova device plugin
 //
-var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
+var AwePoiPositionHelper = (function () {  
 
     var States = {
             STOPPED: 'STOPPED',
@@ -36,7 +41,7 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
     };
     var _state = States.STOPPED;
 
-    var _options = {};
+    var _options = {}; // see DEFAULT_OPTIONS
     var _headingWatchId;
     var _heading;
     var _headingSampleCnt = 0;
@@ -52,8 +57,8 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
         avgSum: {lat:0,lng:0}
     };
 
+    var _cordovaPluginsReady; //set true on deviceready event
     var _arePoisReady;
-    var _camChange=false;
 
     //
     var DEFAULT_OPTIONS = {
@@ -95,6 +100,8 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
 
 
     var initialize = function(poiLocationsArray, options) {
+        document.addEventListener('deviceready', AwePoiPositionHelper._deviceReady);
+
         poiLocations = poiLocationsArray;
 
         options = options || {};
@@ -114,7 +121,8 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
 
 
     var start = function() {
-        console.log('start');
+        //todo add timeout to avoid endless loop when there is error with cordova plugins
+        //console.log('state',_state);
 
         switch(_state) {
             case States.STOPPED:
@@ -132,7 +140,7 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
                 }, 200);
                 break;
             default:
-                console.log('state',_state);
+                //do nothing
         }    
     }
 
@@ -162,7 +170,7 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
         //
         if (!isNaN(_options.povHeight)) {
             _getThreeCamera().position.y = _options.povHeight;
-            document.getElementById("cameraelev").textContent=_options.povHeight+"";
+            //document.getElementById("cameraht").textContent=_options.povHeight+"";
         }
         
         var threeScene = _getThreeScene();
@@ -211,8 +219,18 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
     }
 
 
+    var _deviceReady = function() {
+        console.log('device ready');
+        _cordovaPluginsReady=true;
+    }
+
+
     var _requiredStartDataReceived = function() {
-        return _state == States.STARTING && _hasHeading() && _hasGeolocation();
+        return( 
+            _cordovaPluginsReady &&
+            _state == States.STARTING && 
+            _hasHeading() && 
+            _hasGeolocation());
     }
 
 
@@ -242,7 +260,7 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
         _headingWatchId =
             navigator.compass.watchHeading(
                 function(headingInfo) {      
-                    console.log('true:',headingInfo.trueHeading,'magnetic:',headingInfo.magneticHeading);
+                    //console.log('true:',headingInfo.trueHeading,'magnetic:',headingInfo.magneticHeading);
                     var heading = !!headingInfo.trueHeading ? 
                             headingInfo.trueHeading : headingInfo.magneticHeading;       
                     AwePoiPositionHelper._updateHeading(heading);
@@ -282,7 +300,7 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
         _heading = newHeading;
 
         //console.log('heading: ' + _heading);
-        document.getElementById("heading").textContent=""+_heading;
+        //document.getElementById("heading").textContent=""+_heading;
     }
 
 
@@ -349,8 +367,8 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
 
                 // console.log('lat: ' + position.coords.latitude);
                 // console.log('long: ' + position.coords.longitude);
-        document.getElementById("lat").textContent=""+_geolocData.geoloc.lat;
-        document.getElementById("lng").textContent=""+_geolocData.geoloc.lng;
+        //document.getElementById("lat").textContent=""+_geolocData.geoloc.lat;
+        //document.getElementById("lng").textContent=""+_geolocData.geoloc.lng;
 
         if (!_geolocData.initialGeoloc) {
             _geolocData.initialGeoloc = _geolocData.geoloc;
@@ -512,8 +530,8 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
             camera.position.x += x; 
             camera.position.z += z; 
 
-            console.log('camera', x, z, camera.position);
-            document.getElementById("camera").textContent=""+x+", "+z;
+            //console.log('camera', x, z, camera.position);
+            //document.getElementById("camera").textContent=""+x+", "+z;
         }
     }
 
@@ -528,6 +546,7 @@ var AwePoiPositionHelper = (function () {   //AwePoiPositionHelper
         start: start,
         stop: stop,
 
+        _deviceReady: _deviceReady,
         _requiredStartDataReceived: _requiredStartDataReceived,
         _continueStart: _continueStart,
         _updateHeading: _updateHeading,        

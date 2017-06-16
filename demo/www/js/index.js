@@ -1,21 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+
 var app = {
 
     // Application Constructor
@@ -30,9 +13,9 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function () {
-        window.addEventListener('load', this.onLoad, false);
-        window.addEventListener('pois_ready', this.createProjections, false);
-        document.addEventListener('deviceready', this.onDeviceReady, false);
+        window.addEventListener('load', this.onLoad);
+        window.addEventListener('pois_ready', this.createProjections);
+        document.addEventListener('deviceready', this.onDeviceReady);
     },
 
     // deviceready Event Handler
@@ -90,11 +73,10 @@ var app = {
                             'libs/awe.js/js/plugins/awe.gyro.js', // basic gyro handling
                             'libs/awe.js/js/plugins/awe.mouse.js' + d, // basic mouse handling
                             'js/ecef.js',
-                            'js/awePoiPositionHelper.js'
+                            'js/AwePoiPositionHelper.js'
                         ],
                         success: function (y) {
-                            console.log("ready " + x);
-
+                    
                             // setup and paint the scene
                             awe.setup_scene();
 
@@ -139,28 +121,29 @@ var app = {
                             }, false);
 
                             var poiLocations = [
-                                //{poi: 'pt1', lat:33.073549, lng:-96.756649}, //home
-                                // {poi: 'north_pt', lat:33.073983, lng:-96.7565192},
-                                // {poi: 'south_pt', lat:33.073275, lng:-96.7565192},
-                                // {poi: 'east_pt',  lat:33.073735, lng:-96.7560},
-                                // {poi: 'west_pt',  lat:33.073735, lng:-96.7569}        
-
-                                // {poi_id: 'north_pt', gps: {lat:33.073983, lng:-96.7565192} },
-                                // {poi_id: 'south_pt', gps: {lat:33.073275, lng:-96.756939}},
-                                // {poi_id: 'east_pt',  gps: {lat:33.073414, lng:-96.756151}},
-                                // {poi_id: 'west_pt',  gps: {lat:33.073610, lng:-96.756926}}, 
+                            
+                                // {poi_id: 'north_pt', gps: {lat:33.073983, lng:-96.7565192, height: 0} },
+                                // {poi_id: 'south_pt', gps: {lat:33.073275, lng:-96.756939,  height: 0}},
+                                // {poi_id: 'east_pt',  gps: {lat:33.073414, lng:-96.756151,  height: 0}},
+                                // {poi_id: 'west_pt',  gps: {lat:33.073610, lng:-96.756926,  height: 0}}, 
 
                                 //polar coordinates
-                                {poi_id: 'north_pt', polar: {angle: 0,  radius: 50, elev: 10}},
-                                // {poi_id: 'south_pt', polar: {angle: 180,radius: 20, elev: 0}},
-                                // {poi_id: 'east_pt',  polar: {angle: 90, radius: 20, elev: 0}},
-                                // {poi_id: 'west_pt',  polar: {angle: 270,radius: 20, elev: 0}}
+                                {poi_id: 'north_pt', polar: {angle: 0,  radius: 50, height: 20}},
+                                {poi_id: 'east_pt',  polar: {angle: 90, radius: 30, height: 10}},
+                                {poi_id: 'south_pt', polar: {angle: 180,radius: 20, height: 5}},
+                                {poi_id: 'west_pt',  polar: {angle: 270,radius: 10, height: 0}}
                             ];
 
                             AwePoiPositionHelper.initialize(
                                 poiLocations,
-                                {povHeight: 10, showGrid: true, linkAweRefFrameToCompassHeading:false});
+                                {   povHeight: 10, 
+                                    showGrid: true, 
+                                    linkAweRefFrameToCompassHeading:false
+                                });
                             
+                            //Create awe POIs and start tracking device position changes.
+                            //Awe Projections are created in createProjections(). This function
+                            //is the callback for the custom "pois_ready" event.
                             AwePoiPositionHelper.start();
                         
                         }
@@ -178,6 +161,9 @@ var app = {
         })
     },
 
+    //create Awe projections (cubes). Note that the projection poi_id property is the key to the
+    //poi's defined above. Also the projections are created visibility=false. AwePoiPositionHelper 
+    //changes the visibility to true of all projections associated with a poi it manages to visible.
     createProjections: function() {
                            
         awe.projections.add({                            
