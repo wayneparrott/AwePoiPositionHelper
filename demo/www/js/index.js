@@ -27,7 +27,7 @@ var app = {
         if (window.ezar) {
             ezar.initializeVideoOverlay(
                 function () {
-                    //ezar.getBackCamera().start();
+                    ezar.getBackCamera().start();
                 },
                 function (err) {
                     alert('unable to init ezar: ' + err);
@@ -64,7 +64,7 @@ var app = {
                 // load js files based on capability detection then setup the scene if successful
                 awe.util.require([
                     {
-                        capabilities: ['webgl'],
+                        capabilities: ['webgl'], //todo integrate reqs for geolocation, compass/device-orientation
                         files: [
                             ['libs/awe.js/js/awe-standard-dependencies.js' + d, 'libs/awe.js/js/awe-standard.js'], // core dependencies for this app 
                             ['libs/awe.js/js/plugins_/StereoEffect.js', 'libs/awe.js/js/plugins_/VREffect.js'], // dependencies for render effects
@@ -122,6 +122,7 @@ var app = {
 
                             var poiLocations = [
                             
+                                //test gps data, centered around my office
                                 // {poi_id: 'north_pt', gps: {lat:33.073983, lng:-96.7565192, height: 0} },
                                 // {poi_id: 'south_pt', gps: {lat:33.073275, lng:-96.756939,  height: 0}},
                                 // {poi_id: 'east_pt',  gps: {lat:33.073414, lng:-96.756151,  height: 0}},
