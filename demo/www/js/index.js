@@ -27,7 +27,7 @@ var app = {
         if (window.ezar) {
             ezar.initializeVideoOverlay(
                 function () {
-                    ezar.getBackCamera().start();
+                    //ezar.getBackCamera().start();
                 },
                 function (err) {
                     alert('unable to init ezar: ' + err);
@@ -137,8 +137,7 @@ var app = {
                             AwePoiPositionHelper.initialize(
                                 poiLocations,
                                 {   povHeight: 10, 
-                                    showGrid: true, 
-                                    linkAweRefFrameToCompassHeading:false
+                                    showGrid: true
                                 });
                             
                             //Create awe POIs and start tracking device position changes.
