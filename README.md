@@ -61,9 +61,9 @@ initialize(
 start()
 --------
       
-  Create and position POI objects. POIs positioned by gps (lat,lng) coordinates are converted to [Earth-Centered,Earth-Fixed](https://en.wikipedia.org/wiki/ECEF) coordinates. POI's positioned using polar coordinates are positioned relative to current location. When options.linkCameraToPosition is true (default) update the awe.pov as the device position changes. The Cordova device, deviceorientation (compass) and geolocation plugins are required for this function to perform correctly. 
+  Create and position POI objects. POIs positioned by gps (lat,lng) coordinates are converted to [Earth-Centered,Earth-Fixed](https://en.wikipedia.org/wiki/ECEF) coordinates. POI's positioned using polar coordinates are positioned relative to current location. When options.linkCameraToPosition is true (default)update the awe.pov as the device position changes. The Cordova device, deviceorientation (compass) and geolocation plugins are required for this function to perform correctly. 
 
-  Prior to return of this function a the custom "pois_ready" event is dispatched. Consider using this event to trigger and updates to awe projections attached to POIs such as setting visibility or other properties.
+  Prior to return of this function a custom "pois_ready" event is dispatched. Consider using this event to trigger and updates to awe projections attached to POIs such as setting visibility or other properties.
 
 
 stop()
