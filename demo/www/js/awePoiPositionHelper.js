@@ -24,12 +24,13 @@
 //   pois_ready - indicates awe POIs created and positioned 
 //
 //todo: 
-//  1) add events location_changed, state_changed
-//  2) no requirement for device-orientation plugin when option.linkAweRefFrameToCompassHeading
+//  1) add events location_changed, state_changed, heading_changed
+//  2) add scaling support for gps positioned POIs
+//  3) remove requirement for device-orientation plugin when option.linkAweRefFrameToCompassHeading
 //      watchHeading() changes are not needed
-//  3) no requirement for gps plugin when option.linkAwePovToDevicePosition == false and no gps POIs
+//  4) remove requirement for gps plugin when option.linkAwePovToDevicePosition == false and no gps POIs
 //     watchPosition() changes not needed 
-//  4) replace device.platform implementation in order to remove requirement for Cordova device plugin
+//  5) replace device.platform implementation in order to remove requirement for Cordova device plugin
 //
 var AwePoiPositionHelper = (function () {  
 
