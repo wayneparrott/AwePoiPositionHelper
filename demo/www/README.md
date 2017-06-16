@@ -10,33 +10,27 @@ this project for your own use.
 
 Getting Started
 ---------------
-1. Clone this Github project
+1. Clone this Github project. You need the Apache Cordova SDK installed with its commandline interface (CLI). 
 
-2. From the <prj>/demo directory use the Cordova commandline interface (CLI) to dynamically install the preconfigured Cordova plugins
-
-```
-   cordova plugins ls
-```
-
-3. Optional step: Download and install the ezAR VideoOverlay plugin if you want a live video visible on the background of your app
+2. Optional step: Download the ezAR VideoOverlay plugin if you want a live video visible on the background of your app. Use the Cordova commandline interface (CLI) to install the plugin. 
 
 ```
    cordova plugin install <path>/plugins/com.ezartech.ezar.videooverlay
 ```
 
-4. Add the mobile platform(s) you wish to deploy the project on (ios,android)
+3. Add the mobile platform(s) you wish to deploy the project on (ios,android)
 
 ```
    cordova platform install android
    cordova platform install ios
 ```
 
-4. Build the project, install on your target platforms and test
+4. Build the project, install on your target platforms and test. Note: the config.xml file is configured such that the dependent Cordova plugins will be automatically downloaded and installed in the project.
 ```
    cordova build
 ```
 
-or theoretically you can test the project using a Cordova mobile-web simulator such as Ripple. 
+Alternatively you can theoretically test the project using a Cordova mobile-web simulator such as Ripple. 
 
 
 
