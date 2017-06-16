@@ -390,22 +390,10 @@ var AwePoiPositionHelper = (function () {
         //for each poi 
         for (i=0; i < poiLocations.length; i++) {
             var poiLoc = poiLocations[i];
-            var poi;
             if (poiLoc.gps) 
-                poi = _processPoiGeolocation(poiLoc);
+                _processPoiGeolocation(poiLoc);
             else 
-                poi = _processPoiPolarLocation(poiLoc,linkAweRefFrameToCompassHeading);
-
-            if (device.platform == 'Android') {
-                var vec2 = new THREE.Vector2(poi.position.x,poi.position.z);
-                vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(180));
-                // poi.update({position:
-                //     {x: vec2.x,
-                //      z: vec2.y
-                //     }
-                // });
-            } 
-
+                _processPoiPolarLocation(poiLoc,linkAweRefFrameToCompassHeading);
         }
     }
 
@@ -461,6 +449,9 @@ var AwePoiPositionHelper = (function () {
         vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(poiPolarLoc.polar.angle +
             (linkAweRefFrameToCompassHeading ? 90 : 0)));
 
+        //rotate 180 deg for z reorientation to -z
+        vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(180));
+
         //todo: scale 
 
         //Look up POI in order to update its position,
@@ -484,16 +475,6 @@ var AwePoiPositionHelper = (function () {
              z: vec2.y
             }
         });
-
-        if (device.platform == 'Android') {
-                var vec2 = new THREE.Vector2(poi.position.x,poi.position.z);
-                vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(180));
-                poi.update({position:
-                    {x: vec2.x,
-                     z: vec2.y
-                    }
-                });
-            } 
 
         return poi;
     }
