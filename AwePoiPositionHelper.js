@@ -390,9 +390,10 @@ var AwePoiPositionHelper = (function () {
         //for each poi 
         for (i=0; i < poiLocations.length; i++) {
             var poiLoc = poiLocations[i];
-            if (poiLoc.gps) _processPoiGeolocation(poiLoc);
-            else _processPoiPolarLocation(poiLoc,linkAweRefFrameToCompassHeading);
-
+            if (poiLoc.gps) 
+                _processPoiGeolocation(poiLoc);
+            else 
+                _processPoiPolarLocation(poiLoc,linkAweRefFrameToCompassHeading);
         }
     }
 
@@ -434,6 +435,8 @@ var AwePoiPositionHelper = (function () {
              z: poiEcefLoc[1]*-1 //translate z to -z
             }
         });
+
+        return poi;
     }
 
 
@@ -444,7 +447,10 @@ var AwePoiPositionHelper = (function () {
 
         //rotate the vec2 by the polar angle and adjust for north being on z-axis in -z direction
         vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(poiPolarLoc.polar.angle +
-            (linkAweRefFrameToCompassHeading ? -90 : 0)));
+            (linkAweRefFrameToCompassHeading ? 90 : 0)));
+
+        //rotate 180 deg for z reorientation to -z
+        vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(180));
 
         //todo: scale 
 
@@ -469,6 +475,8 @@ var AwePoiPositionHelper = (function () {
              z: vec2.y
             }
         });
+
+        return poi;
     }
 
 
