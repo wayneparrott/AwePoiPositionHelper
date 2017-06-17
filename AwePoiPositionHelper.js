@@ -72,6 +72,10 @@ var AwePoiPositionHelper = (function () {
         //distance above or below ground plane
         povHeight: 0,
         
+        //filter all headings s.t. headingInfo.headingAccuracy > minHeadingAccuracy
+        minHeadingAccuracy: 15,
+        
+        
         //Show xyz axis lines.
         // povHeight must be < 0 or > 0 for the axis to be visible 
         // Uses a THREE.AxisHelper.
@@ -109,6 +113,7 @@ var AwePoiPositionHelper = (function () {
             options.linkAweRefFrameToCompassHeading : DEFAULT_OPTIONS.linkAweRefFrameToCompassHeading;
         options.linkAwePovToDevicePosition = options.hasOwnProperty('linkAwePovToDevicePosition') ? 
             options.linkAwePovToDevicePosition : DEFAULT_OPTIONS.linkAwePovToDevicePosition;
+        options.minHeadingAccuracy = options.hasOwnProperty('minHeadingAccuracy') ? options.minHeadingAccuracy : DEFAULT_OPTIONS.minHeadingAccuracy;
         options.povHeight = options.hasOwnProperty('povHeight') ? options.povHeight : DEFAULT_OPTIONS.povHeight;
         options.showAxis = options.hasOwnProperty('showAxis') ? options.showAxis : DEFAULT_OPTIONS.showAxis;   
         options.axisLength = options.hasOwnProperty('axisLength') ? options.axisLength : DEFAULT_OPTIONS.axisLength;   
@@ -147,8 +152,7 @@ var AwePoiPositionHelper = (function () {
 
     var _continueStart = function() {
 
-        //adjust POIs for gps (lat,lng) position; create poi if it does not exist
-        //adjust POIs for polar coordinate position; create poi if it does not exist
+        //adjust POIs position; create poi if it does not exist
         _processPoiLocations(!!_options.linkAweRefFrameToCompassHeading);
         
         //rotate camera to compensate for initial heading of device
@@ -163,9 +167,6 @@ var AwePoiPositionHelper = (function () {
 
         _makeProjectionsVisible();
         _state = States.RUNNING;
-
-        //no longer need heading
-        //_stopHeadingWatch();
 
         //
         if (!isNaN(_options.povHeight)) {
@@ -189,7 +190,8 @@ var AwePoiPositionHelper = (function () {
 
     var stop = function() {
         _stopGeolocationWatch();
-
+        _stopHeadingWatch();
+        
         _state = States.STOPPED;
 
         //all state for new start() session
@@ -210,7 +212,7 @@ var AwePoiPositionHelper = (function () {
             geoloc: null,
             prevEcefLoc: null,
             ecefLoc: null,
-            data: [],  //data pts for moving avg
+            data: [],  //data pts for moving avg calc
             maxSampleCnt: 5,
             avgSum: {lat:0,lng:0}
         };
@@ -255,11 +257,13 @@ var AwePoiPositionHelper = (function () {
 
 
     var _startHeadingWatch = function() {
-        //if (!_options._applyInitialHeadingOffset) return;
-
+    
         _headingWatchId =
             navigator.compass.watchHeading(
-                function(headingInfo) {      
+                function(headingInfo) {   
+                    if (headingInfo.headingAccuracy > _options.minHeadingAccuracy || 
+                        headingInfo.trueHeading < 0) return;
+
                     //console.log('true:',headingInfo.trueHeading,'magnetic:',headingInfo.magneticHeading);
                     var heading = !!headingInfo.trueHeading ? 
                             headingInfo.trueHeading : headingInfo.magneticHeading;       
@@ -436,6 +440,15 @@ var AwePoiPositionHelper = (function () {
             }
         });
 
+        if (device.platform == 'iOS') {
+            //rotate 90
+            var vec = new THREE.Vector2(poi.position.x,poi.position.z);
+            var rot = THREE.Math.degToRad(90); 
+            vec.rotateAround({x:0,y:0}, rot);
+            poi.update({position: {x:vec.x,z:vec.y}});
+
+        }
+
         return poi;
     }
 
@@ -446,11 +459,12 @@ var AwePoiPositionHelper = (function () {
         var vec2 = new THREE.Vector2(poiPolarLoc.polar.radius,0);
 
         //rotate the vec2 by the polar angle and adjust for north being on z-axis in -z direction
-        vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(poiPolarLoc.polar.angle +
-            (linkAweRefFrameToCompassHeading ? 90 : 0)));
+        vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(poiPolarLoc.polar.angle));
 
-        //rotate 180 deg for z reorientation to -z
-        vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(180));
+        if (linkAweRefFrameToCompassHeading && device.platform == 'Android') {
+            var angle = -90;
+            vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(angle));
+        }
 
         //todo: scale 
 
@@ -481,8 +495,7 @@ var AwePoiPositionHelper = (function () {
 
 
     var _applyInitialHeadingOffset = function() {
-       var iosCompensation = device.platform == 'iOS' ? -90 : 0;
-       var h = _getHeading() + iosCompensation;
+       var h = _getHeading();
        //console.log('heading: ', h);
 
         //for each poi rotationally translate position by initial heading
