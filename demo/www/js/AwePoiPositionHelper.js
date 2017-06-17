@@ -255,7 +255,10 @@ var AwePoiPositionHelper = (function () {
     
         _headingWatchId =
             navigator.compass.watchHeading(
-                function(headingInfo) {      
+                function(headingInfo) {   
+                    if (headingInfo.headingAccuracy > 10 || 
+                        headingInfo.trueHeading < 0) return;
+
                     //console.log('true:',headingInfo.trueHeading,'magnetic:',headingInfo.magneticHeading);
                     var heading = !!headingInfo.trueHeading ? 
                             headingInfo.trueHeading : headingInfo.magneticHeading;       
@@ -296,7 +299,7 @@ var AwePoiPositionHelper = (function () {
         _heading = newHeading;
 
         //console.log('heading: ' + _heading);
-        //document.getElementById("heading").textContent=""+_heading;
+        document.getElementById("heading").textContent=""+_heading;
     }
 
 
@@ -432,6 +435,15 @@ var AwePoiPositionHelper = (function () {
             }
         });
 
+        if (device.platform == 'iOS') {
+            //rotate 90
+            var vec = new THREE.Vector2(poi.position.x,poi.position.z);
+            var rot = THREE.Math.degToRad(90); 
+            vec.rotateAround({x:0,y:0}, rot);
+            poi.update({position: {x:vec.x,z:vec.y}});
+
+        }
+
         return poi;
     }
 
@@ -442,11 +454,11 @@ var AwePoiPositionHelper = (function () {
         var vec2 = new THREE.Vector2(poiPolarLoc.polar.radius,0);
 
         //rotate the vec2 by the polar angle and adjust for north being on z-axis in -z direction
-        vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(poiPolarLoc.polar.angle +
-            (linkAweRefFrameToCompassHeading ? 90 : 0)));
+        vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(poiPolarLoc.polar.angle));
 
-        //rotate 180 deg for z reorientation to -z
-        vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(180));
+        if (device.platform == 'Android') {
+            vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(-90));
+        }
 
         //todo: scale 
 
@@ -477,8 +489,7 @@ var AwePoiPositionHelper = (function () {
 
 
     var _applyInitialHeadingOffset = function() {
-       var iosCompensation = device.platform == 'iOS' ? -90 : 0;
-       var h = _getHeading() + iosCompensation;
+       var h = _getHeading();
        //console.log('heading: ', h);
 
         //for each poi rotationally translate position by initial heading
