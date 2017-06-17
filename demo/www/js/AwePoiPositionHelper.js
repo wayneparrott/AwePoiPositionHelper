@@ -456,8 +456,9 @@ var AwePoiPositionHelper = (function () {
         //rotate the vec2 by the polar angle and adjust for north being on z-axis in -z direction
         vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(poiPolarLoc.polar.angle));
 
-        if (device.platform == 'Android') {
-            vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(-90));
+        if (linkAweRefFrameToCompassHeading && device.platform == 'Android') {
+            var angle = -90;
+            vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(angle));
         }
 
         //todo: scale 
