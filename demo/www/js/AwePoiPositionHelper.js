@@ -304,7 +304,7 @@ var AwePoiPositionHelper = (function () {
         _heading = newHeading;
 
         //console.log('heading: ' + _heading);
-        document.getElementById("heading").textContent=""+_heading;
+        //document.getElementById("heading").textContent=""+_heading;
     }
 
 
