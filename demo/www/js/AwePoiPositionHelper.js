@@ -72,6 +72,10 @@ var AwePoiPositionHelper = (function () {
         //distance above or below ground plane
         povHeight: 0,
         
+        //filter all headings s.t. headingInfo.headingAccuracy > minHeadingAccuracy
+        minHeadingAccuracy: 15,
+        
+        
         //Show xyz axis lines.
         // povHeight must be < 0 or > 0 for the axis to be visible 
         // Uses a THREE.AxisHelper.
@@ -109,6 +113,7 @@ var AwePoiPositionHelper = (function () {
             options.linkAweRefFrameToCompassHeading : DEFAULT_OPTIONS.linkAweRefFrameToCompassHeading;
         options.linkAwePovToDevicePosition = options.hasOwnProperty('linkAwePovToDevicePosition') ? 
             options.linkAwePovToDevicePosition : DEFAULT_OPTIONS.linkAwePovToDevicePosition;
+        options.minHeadingAccuracy = options.hasOwnProperty('minHeadingAccuracy') ? options.minHeadingAccuracy : DEFAULT_OPTIONS.minHeadingAccuracy;
         options.povHeight = options.hasOwnProperty('povHeight') ? options.povHeight : DEFAULT_OPTIONS.povHeight;
         options.showAxis = options.hasOwnProperty('showAxis') ? options.showAxis : DEFAULT_OPTIONS.showAxis;   
         options.axisLength = options.hasOwnProperty('axisLength') ? options.axisLength : DEFAULT_OPTIONS.axisLength;   
@@ -256,7 +261,7 @@ var AwePoiPositionHelper = (function () {
         _headingWatchId =
             navigator.compass.watchHeading(
                 function(headingInfo) {   
-                    if (headingInfo.headingAccuracy > 10 || 
+                    if (headingInfo.headingAccuracy > _options.minHeadingAccuracy || 
                         headingInfo.trueHeading < 0) return;
 
                     //console.log('true:',headingInfo.trueHeading,'magnetic:',headingInfo.magneticHeading);
