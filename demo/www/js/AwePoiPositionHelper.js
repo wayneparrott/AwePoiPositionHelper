@@ -546,7 +546,7 @@ var AwePoiPositionHelper = (function () {
         if (Math.abs(x) >= MIN_ECF_DELTA || Math.abs(z) >= MIN_ECF_DELTA) {
             var camera = awe.scene().get_three_scene().children[0];
             camera.position.x += x; 
-            camera.position.z += z; 
+            camera.position.z += -z; //compensate for -z to north direction 
             
             //todo: animate change rather than abrupt discrete change
 
