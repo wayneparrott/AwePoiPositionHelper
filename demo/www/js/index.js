@@ -13,9 +13,13 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function () {
-        window.addEventListener('load', this.onLoad);
+        window.addEventListener('load', this.onLoad); //initiate awe startup
+
         window.addEventListener('pois_ready', this.createProjections);
-        document.addEventListener('deviceready', this.onDeviceReady);
+        window.addEventListener('headingChanged', this.headingChanged);
+        window.addEventListener('positionChanged', this.positionChanged);
+        
+        document.addEventListener('deviceready', this.onDeviceReady); //cordova plugins ready
     },
 
     // deviceready Event Handler
@@ -33,8 +37,9 @@ var app = {
                     alert('unable to init ezar: ' + err);
                 });
         } else {
-            alert('Video background is not available.');
+            //alert('Video background is not available.');
         }
+
     },
 
     onLoad: function () {
@@ -260,6 +265,17 @@ var app = {
             }
         );
 
+    },
+
+    headingChanged: function(event) {
+        var heading = event.detail;
+        document.getElementById("heading").textContent=""+heading;
+    },
+
+    positionChanged: function(event) {
+        var geoloc = event.detail;
+        document.getElementById("lat").textContent=""+geoloc.lat;
+        document.getElementById("lng").textContent=""+geoloc.lng;
     }
     
 };
