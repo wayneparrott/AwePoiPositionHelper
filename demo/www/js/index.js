@@ -128,29 +128,29 @@ var app = {
                             var poiLocations = [
                             
                                 //test gps data, centered around my office
-                                // {poi_id: 'north_pt', gps: {lat:33.073983, lng:-96.7565192, height: 0} },
-                                // {poi_id: 'south_pt', gps: {lat:33.073275, lng:-96.756939,  height: 0}},
-                                // {poi_id: 'east_pt',  gps: {lat:33.073414, lng:-96.756151,  height: 0}},
+                                // {poi_id: 'north_pt', gps: {lat:33.073983, lng:-96.7565192, height: 20} },
+                                // {poi_id: 'south_pt', gps: {lat:33.073275, lng:-96.756939,  height: 10}},
+                                // {poi_id: 'east_pt',  gps: {lat:33.073414, lng:-96.756151,  height: 5}},
                                 // {poi_id: 'west_pt',  gps: {lat:33.073610, lng:-96.756926,  height: 0}}, 
 
-                                //polar coordinates
-                                // {poi_id: 'north_pt', polar: {angle: 0,  radius: 50, height: 20}},
-                                // {poi_id: 'east_pt',  polar: {angle: 90, radius: 30, height: 10}},
-                                // {poi_id: 'south_pt', polar: {angle: 180,radius: 20, height: 5}},
-                                // {poi_id: 'west_pt',  polar: {angle: 270,radius: 10, height: 0}}
+                                //polar coordinates 
+                                {poi_id: 'north_pt', polar: {angle: 0,  radius: 50, height: 20}},
+                                {poi_id: 'east_pt',  polar: {angle: 90, radius: 30, height: 10}},
+                                {poi_id: 'south_pt', polar: {angle: 180,radius: 20, height: 5}},
+                                {poi_id: 'west_pt',  polar: {angle: 270,radius: 10, height: 0}}
 
-                                {poi_id: 'north_pt', polar: {angle: 0,  radius: 5, height: 5}},
-                                {poi_id: 'east_pt',  polar: {angle: 90, radius: 5, height: 5}},
-                                {poi_id: 'south_pt', polar: {angle: 180,radius: 5, height: 5}},
-                                {poi_id: 'west_pt',  polar: {angle: 270,radius: 5, height: 5}}
+                                // {poi_id: 'north_pt', polar: {angle: 0,  radius: 5, height: 5}},
+                                // {poi_id: 'east_pt',  polar: {angle: 90, radius: 5, height: 5}},
+                                // {poi_id: 'south_pt', polar: {angle: 180,radius: 5, height: 5}},
+                                // {poi_id: 'west_pt',  polar: {angle: 270,radius: 5, height: 5}}
 
                             ];
 
                             AwePoiPositionHelper.initialize(
                                 poiLocations,
-                                {   povHeight: 7, 
+                                {   povHeight: 20, 
                                     showGrid: true,
-                                    linkAweRefFrameToCompassHeading: false
+                                    linkAweRefFrameToCompassHeading: true
                                 });
                             
                             //Create awe POIs and start tracking device position changes.
@@ -179,9 +179,9 @@ var app = {
     createProjections: function() {
         var cube = {
                 shape: 'cube',
-                x: 1,
-                y: 1,
-                z: 1        
+                x: 5,
+                y: 5,
+                z: 5        
         };
         var rotation = {
                 x: 30,
