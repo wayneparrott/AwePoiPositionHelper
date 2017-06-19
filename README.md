@@ -16,7 +16,7 @@ The following Cordova plugins are required:
 Defining a Point of Interest
 ----------------------------
 
-There are 2 formats for defining a POI: 
+AwePoiPositionHelper supports 2 formats for defining a POI: 
 * GPS latitude & longitude coordinate
 * Polar coordinates relative to the position of the device when start() is called.
 
@@ -115,6 +115,7 @@ window.addEventListener('pois_ready', function() {
     }
   }), false);
 ```
+
 
 
 
