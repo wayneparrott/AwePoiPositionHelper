@@ -16,12 +16,14 @@
 // Dependencies:
 //   ecef.js   - converts gps (lat,lng) to xyz coords
 //   cordova plugins: 
-//      device
-//      geolocation (lat,lng)
-//      device-orientation (compass heading)
+//      device - required for determing platform details, e.g., iOS or Android
+//      geolocation (lat,lng) - required to deterine the device position and changes in position
+//      device-orientation (compass heading) - required to determine the device compass heading
 //
-// Custome events: 
+// Custom events: 
 //   pois_ready - indicates awe POIs created and positioned 
+//   heading_changed - indicates device compass heading changed, event.detail is current heading value (number)
+//   position_changed - indicates device position changed, event.detail is current {lat,lng}
 //
 //todo: 
 //  1) add events location_changed, state_changed
@@ -48,13 +50,13 @@ var AwePoiPositionHelper = (function () {
 
     var _geolocWatchId;
     var _geolocData = {
-        initialGeoloc: null,
-        geoloc: null,
-        prevEcefLoc: null,
-        ecefLoc: null,
-        data: [],  //data pts for moving avg
-        maxSampleCnt: 5,
-        avgSum: {lat:0,lng:0}
+            initialGeoloc: null,    //{lat, lng}
+            geoloc: null,           //{lat, lng}
+            prevEcefLoc: null,      //{x,y,z}
+            ecefLoc: null,          //{x,y,z}
+            data: [],  //data pts for moving avg
+            maxSampleCnt: 5,
+            avgSum: {lat:0,lng:0}
     };
 
     var _cordovaPluginsReady; //set true on deviceready event
@@ -161,7 +163,7 @@ var AwePoiPositionHelper = (function () {
         }
 
         //notify listeners that POIs are ready for use
-        _poisReady = true;
+        _arePoisReady = true;
         var event = new CustomEvent('pois_ready');
         window.dispatchEvent(event);
 
@@ -171,7 +173,6 @@ var AwePoiPositionHelper = (function () {
         //
         if (!isNaN(_options.povHeight)) {
             _getThreeCamera().position.y = _options.povHeight;
-            //document.getElementById("cameraht").textContent=_options.povHeight+"";
         }
         
         var threeScene = _getThreeScene();
@@ -222,7 +223,7 @@ var AwePoiPositionHelper = (function () {
 
 
     var _deviceReady = function() {
-        console.log('device ready');
+        //console.log('device ready');
         _cordovaPluginsReady=true;
     }
 
@@ -258,20 +259,13 @@ var AwePoiPositionHelper = (function () {
 
     var _startHeadingWatch = function() {
     
-        _headingWatchId =
-            navigator.compass.watchHeading(
-                function(headingInfo) {   
-                    if (headingInfo.headingAccuracy > _options.minHeadingAccuracy || 
-                        headingInfo.trueHeading < 0) return;
-
-                    //console.log('true:',headingInfo.trueHeading,'magnetic:',headingInfo.magneticHeading);
-                    var heading = !!headingInfo.trueHeading ? 
-                            headingInfo.trueHeading : headingInfo.magneticHeading;       
-                    AwePoiPositionHelper._updateHeading(heading);
-                },
-                _errorHandler,
-                _headingOptions
-            );
+        _headingWatchId = navigator.compass.watchHeading(
+            function(headingInfo) {        
+                AwePoiPositionHelper._updateHeading(headingInfo);                    
+            },
+            _errorHandler,
+            _headingOptions
+        );
     }
 
 
@@ -294,17 +288,24 @@ var AwePoiPositionHelper = (function () {
     }
 
 
-    var _updateHeading = function(newHeading) {
+    var _updateHeading = function(headingInfo) {
         
         //track number of heading callbacks, 
-        //discard the 1st callback as it is frequently 0 on android
+        // Discovered during testing to ignore the initially heading events.
+        // On android the first few data pts are 0. On iOS the initial accuracy is way off.
         _headingSampleCnt++;
         if (_headingSampleCnt < 10) return;
+        
+        if (headingInfo.headingAccuracy > _options.minHeadingAccuracy || 
+             headingInfo.trueHeading < 0) return;
 
-        _heading = newHeading;
+         //console.log('true:',headingInfo.trueHeading,'magnetic:',headingInfo.magneticHeading);
+        _heading = !!headingInfo.trueHeading ? headingInfo.trueHeading : headingInfo.magneticHeading;  
+
+        var event = new CustomEvent('headingChanged',{detail: _heading});
+        window.dispatchEvent(event);
 
         //console.log('heading: ' + _heading);
-        //document.getElementById("heading").textContent=""+_heading;
     }
 
 
@@ -339,11 +340,9 @@ var AwePoiPositionHelper = (function () {
 
 
     var _updateGeolocation = function(position) {
-        //console.log('this',this);
 
         var rawGeoloc = {lat:position.coords.latitude,lng:position.coords.longitude};
         
-        //var geolocationData = AwePoiPositionHelper.geolocationData;
         _geolocData.data.push(rawGeoloc);
 
         if (_geolocData.data.length > 1) {
@@ -369,10 +368,8 @@ var AwePoiPositionHelper = (function () {
         _geolocData.ecefLoc = 
                 project(_geolocData.geoloc.lat,_geolocData.geoloc.lng,0);
 
-                // console.log('lat: ' + position.coords.latitude);
-                // console.log('long: ' + position.coords.longitude);
-        //document.getElementById("lat").textContent=""+_geolocData.geoloc.lat;
-        //document.getElementById("lng").textContent=""+_geolocData.geoloc.lng;
+        // console.log('lat: ' + position.coords.latitude);
+        // console.log('long: ' + position.coords.longitude);
 
         if (!_geolocData.initialGeoloc) {
             _geolocData.initialGeoloc = _geolocData.geoloc;
@@ -380,12 +377,11 @@ var AwePoiPositionHelper = (function () {
         }
 
         _updateCamera();
+
+        var event = new CustomEvent('positionChanged',{detail: _geolocData.geoloc});
+        window.dispatchEvent(event);
     }
 
-
-    var _arePoisReady = function() {
-        return !!AwePoiPositionHelper.poisReady;
-    }
 
     var _processPoiLocations = function(linkAweRefFrameToCompassHeading) {
 
@@ -461,7 +457,7 @@ var AwePoiPositionHelper = (function () {
         //rotate the vec2 by the polar angle and adjust for north being on z-axis in -z direction
         vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(poiPolarLoc.polar.angle));
 
-        if (linkAweRefFrameToCompassHeading && device.platform == 'Android') {
+        if (device.platform == 'Android') {
             var angle = -90;
             vec2.rotateAround({x:0,y:0}, THREE.Math.degToRad(angle));
         }
@@ -537,22 +533,24 @@ var AwePoiPositionHelper = (function () {
 
 
     var _updateCamera = function() {
-        if (! (_arePoisReady() && !!_options.linkAwePovToDevicePosition)) return;
+        if (! (_arePoisReady && _options.linkAwePovToDevicePosition)) return;
 
         var MIN_ECF_DELTA = 1.0;
-        var prevEcef = _geolocData.prevEcefLocation;
-        var curEcef = _geolocData.ecefLocation;
+        var prevEcef = _geolocData.prevEcefLoc;
+        var curEcef = _geolocData.ecefLoc;
 
         var x = Math.round(curEcef[0] - prevEcef[0]);
         var z = Math.round(curEcef[1] - prevEcef[1]);
 
+        //limit camera updates to significant position changes
         if (Math.abs(x) >= MIN_ECF_DELTA || Math.abs(z) >= MIN_ECF_DELTA) {
             var camera = awe.scene().get_three_scene().children[0];
             camera.position.x += x; 
             camera.position.z += z; 
+            
+            //todo: animate change rather than abrupt discrete change
 
-            //console.log('camera', x, z, camera.position);
-            //document.getElementById("camera").textContent=""+x+", "+z;
+            //console.log('camera', x, z, camera.position);            
         }
     }
 
