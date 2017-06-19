@@ -134,15 +134,21 @@ var app = {
                                 // {poi_id: 'west_pt',  gps: {lat:33.073610, lng:-96.756926,  height: 0}}, 
 
                                 //polar coordinates
-                                {poi_id: 'north_pt', polar: {angle: 0,  radius: 50, height: 20}},
-                                {poi_id: 'east_pt',  polar: {angle: 90, radius: 30, height: 10}},
-                                {poi_id: 'south_pt', polar: {angle: 180,radius: 20, height: 5}},
-                                {poi_id: 'west_pt',  polar: {angle: 270,radius: 10, height: 0}}
+                                // {poi_id: 'north_pt', polar: {angle: 0,  radius: 50, height: 20}},
+                                // {poi_id: 'east_pt',  polar: {angle: 90, radius: 30, height: 10}},
+                                // {poi_id: 'south_pt', polar: {angle: 180,radius: 20, height: 5}},
+                                // {poi_id: 'west_pt',  polar: {angle: 270,radius: 10, height: 0}}
+
+                                {poi_id: 'north_pt', polar: {angle: 0,  radius: 5, height: 5}},
+                                {poi_id: 'east_pt',  polar: {angle: 90, radius: 5, height: 5}},
+                                {poi_id: 'south_pt', polar: {angle: 180,radius: 5, height: 5}},
+                                {poi_id: 'west_pt',  polar: {angle: 270,radius: 5, height: 5}}
+
                             ];
 
                             AwePoiPositionHelper.initialize(
                                 poiLocations,
-                                {   povHeight: 10, 
+                                {   povHeight: 7, 
                                     showGrid: true,
                                     linkAweRefFrameToCompassHeading: false
                                 });
@@ -171,21 +177,23 @@ var app = {
     //poi's defined above. Also the projections are created visibility=false. AwePoiPositionHelper 
     //changes the visibility to true of all projections associated with a poi it manages to visible.
     createProjections: function() {
-                           
+        var cube = {
+                shape: 'cube',
+                x: 1,
+                y: 1,
+                z: 1        
+        };
+        var rotation = {
+                x: 30,
+                y: 30,
+                z: 0
+        };
+
         awe.projections.add({                            
                 id: 'north_poi',
                 visible: false,
-                geometry: {
-                    shape: 'cube',
-                    x: 5,
-                    y: 5,
-                    z: 5
-                },
-                rotation: {
-                    x: 30,
-                    y: 30,
-                    z: 0
-                },
+                geometry: cube,
+                rotation: rotation,
                 material: {
                     type: 'basic',
                     color: 0x0000ff, //blue
@@ -198,17 +206,8 @@ var app = {
         awe.projections.add({                            
                 id: 'south_poi',
                 visible: false,
-                geometry: {
-                    shape: 'cube',
-                    x: 5,
-                    y: 5,
-                    z: 5
-                },
-                rotation: {
-                    x: 30,
-                    y: 30,
-                    z: 0
-                },
+                geometry:  cube,
+                rotation: rotation,
                 material: {
                     type: 'basic',
                     color: 0xff0000, //red
@@ -221,17 +220,8 @@ var app = {
         awe.projections.add({                            
                 id: 'east_poi',
                 visible: false,
-                geometry: {
-                    shape: 'cube',
-                    x: 5,
-                    y: 5,
-                    z: 5
-                },
-                rotation: {
-                    x: 30,
-                    y: 30,
-                    z: 0
-                },
+                geometry: cube,
+                rotation: rotation,
                 material: {
                     type: 'basic',
                     color: 0x00ff00, //green
@@ -244,17 +234,8 @@ var app = {
         awe.projections.add({                            
                 id: 'west_poi',
                 visible: false,
-                geometry: {
-                    shape: 'cube',
-                    x: 5,
-                    y: 5,
-                    z: 5
-                },
-                rotation: {
-                    x: 30,
-                    y: 30,
-                    z: 0
-                },
+                geometry: cube,
+                rotation: rotation,
                 material: {
                     type: 'basic',
                     color: 0xff8010, //orange
