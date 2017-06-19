@@ -37,7 +37,7 @@ var app = {
                     alert('unable to init ezar: ' + err);
                 });
         } else {
-            //alert('Video background is not available.');
+            alert('Video background is not available.');
         }
 
     },
